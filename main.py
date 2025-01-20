@@ -21,11 +21,13 @@ def show_anns(anns):
 sam = sam_model_registry["vit_b"](checkpoint="model/sam_vit_b_01ec64.pth").to(device="cpu")
 mask_generator = SamAutomaticMaskGenerator(sam)
 
-image = cv2.imread("global_color1.jpg")
+image = cv2.imread("image.jpg")
+h, w = image.shape[:2]
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-plt.figure(figsize=(20,20))
+plt.figure(figsize=(w / 100, h / 100))
 plt.imshow(image)
 plt.axis('off')
+plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
 plt.savefig("orig_image.jpg")
 
 masks = mask_generator.generate(image)
@@ -38,8 +40,9 @@ for m in masks:
     print(m['predicted_iou'])
     print(m['point_coords'])
     print(m['crop_box'])
-plt.figure(figsize=(20,20))
+plt.figure(figsize=(w / 100, h / 100))
 plt.imshow(image)
 show_anns(masks)
 plt.axis('off')
+plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
 plt.savefig("masked_image.jpg")
